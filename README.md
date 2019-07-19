@@ -40,7 +40,20 @@ Ce projet est découpé en parties distinctes correspondant à des préoccupatio
 
 La compilation du projet se fait avec l'outil [SBT](https://www.scala-sbt.org/) et le plugin [sbt-assembly](https://github.com/sbt/sbt-assembly)
 
+### Téléchargement du projet
+> `$ git clone https://github.com/pluzeaux/pdf-parser`
+
+### Compilation du projet
+> `$ cd ./pdf-parser`
+
+> `$ sbt assembly`
+
+Le fichier jar exécutable se trouve dans le répertoire target du projet.
+
+
 ## Usage
+
+> `$ java -jar target/scala-2.12/pdf-parser-assembly-0.1.0-SNAPSHOT.jar <path-to-pdf-directories>`
 
 ## Contact
 Si vous détectez un bug, une piste d'amélioration ou une question sur ce projet vous pouvez me contacter via une « Pull request » GitHub, ou directement par mail [Philippe LUZEAUX](mailto:philippe.luzeaux@gmail.com).
