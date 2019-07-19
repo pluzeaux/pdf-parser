@@ -1,6 +1,7 @@
 
 import java.io.{File, PrintWriter}
 
+import java.nio.file.{Paths, Files}
 import better.files._
 import parser.PDFTabularTextStripper
 
@@ -20,19 +21,19 @@ object Main extends App {
   }
 
   override def main(args: Array[String]): Unit = {
-    val start = System.nanoTime()
-    //    val files = getRecursiveListOfFiles(new File("/Users/Philippe/Development/POC_NLP_Documents_references/documents/pdf"))
-    val files = getRecursiveListOfFiles(new File("/Users/Philippe/Development/POC_NLP_Documents_references/test/pdf"))
-    //    val files = getRecursiveListOfFiles(new File("/Users/Philippe/Development/POC_NLP_Documents_references/documents-reference-2018/pdf"))
+    if (args.length != 1) {
+      usage
+    } else if (!Files.exists(Paths.get(args(0)))) {
+      println("[ERROR] This Path doesn't exists")
+    } else {
+      process(args(0))
+    }
+  }
 
-    //  val filePath = "/Users/Philippe/Development/POC_NLP_Documents_references/documents/pdf/sg_page_8.pdf"
-    //  val filePath = "/Users/Philippe/Development/POC_NLP_Documents_references/documents/pdf/ddr-2018-societe-generale-32.pdf"
-    //  val filePath = "/Users/Philippe/Development/POC_NLP_Documents_references/documents/pdf/ddr-2018-societe-generale-depot-amf-d18-0112-fr.pdf"
-    //  val filePath = "/Users/Philippe/Development/POC_NLP_Documents_references/documents/pdf/ddr2017_bnp_paribas_fr.pdf"
-    //  val filePath = "/Users/Philippe/Development/POC_NLP_Documents_references/documents/pdf/ddr-2018-societe-generale-1-50.pdf"
-    //  val filePath = "/Users/Philippe/Development/POC_NLP_Documents_references/documents/pdf/LUZEAUX_PHILIPPE_03_2019.pdf"
-    //  val filePath = "/Users/Philippe/Development/POC_NLP_Documents_references/documents/pdf/ddr2017_bnp_paribas_fr.pdf"
+  def process(path: String): Unit = {
+    val start = System.nanoTime
 
+    val files = getRecursiveListOfFiles(new File(path))
 
     for (f <- files) {
       if (f.getName.toLowerCase().endsWith(".pdf")) {
@@ -51,10 +52,10 @@ object Main extends App {
       }
     }
 
-    println(((System.nanoTime() - start) / 1000000) + " milliseconds")
-
-
+    println(((System.nanoTime - start) / 1000000) + " milliseconds")
   }
 
-
+  def usage: Unit = {
+    println("[ERROR] Usage: java -jar pdf-parser<version>.jar <path-to-pdf>")
+  }
 }

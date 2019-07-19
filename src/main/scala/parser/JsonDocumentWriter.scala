@@ -88,7 +88,7 @@ class JsonDocumentWriter() {
 
   /**
     * Permet le regroupement de blocs correspondant au même élément (table)
-    * Nous pouvons avoir un élément détecté comme paragraphe mais faisant partie d'une table
+    * Nous pouvons avoir un élément détecté comme paragraphe mais faisant partie d'une table,
     */
   val filterBlocks: (List[Block], List[Block]) => ((Block, Block, Block) => Boolean) => List[Block] =
     (lst: List[Block], acc: List[Block]) => (f: (Block, Block, Block) => Boolean) => {
