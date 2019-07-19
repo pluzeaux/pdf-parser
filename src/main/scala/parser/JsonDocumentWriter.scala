@@ -22,6 +22,12 @@ import scala.math._
   *   - police
   *   - etc.
   *
+  * Le traitement regroupe les caractère en :
+  *   - lignes
+  *   - blocs
+  *       . paragraphes
+  *       . tables
+  *
   * @author Philippe LUZEAUX
   *
   */
@@ -88,7 +94,7 @@ class JsonDocumentWriter() {
 
   /**
     * Permet le regroupement de blocs correspondant au même élément (table)
-    * Nous pouvons avoir un élément détecté comme paragraphe mais faisant partie d'une table,
+    * Nous pouvons avoir un élément détecté comme paragraphe mais étant inclu dans une table
     */
   val filterBlocks: (List[Block], List[Block]) => ((Block, Block, Block) => Boolean) => List[Block] =
     (lst: List[Block], acc: List[Block]) => (f: (Block, Block, Block) => Boolean) => {
@@ -125,6 +131,8 @@ class JsonDocumentWriter() {
 
   /**
     * Un caractère (first) se trouve t-il à l'intérieur d'une ligne (second) ?
+    * C'est à dire détermine si le caractère est inclu dans l'alignement horizontal de la ligne
+    *
     * @param first, caractère
     * @param second, ligne
     */
@@ -135,6 +143,8 @@ class JsonDocumentWriter() {
 
   /**
     * Un caractère se trouve t-il en partie dans l'axe horizontal d'une ligne ?
+    * C'est à dire détermine si l'intersection entre l'alignement horizontal de la ligne et du caractère n'est pas vide
+    *
     * @param p, caractère
     * @param l, ligne
     */
