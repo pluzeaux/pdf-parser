@@ -4,6 +4,7 @@ import java.io.{File, PrintWriter}
 import java.nio.file.{Paths, Files}
 import better.files._
 import parser.PDFTabularTextStripper
+import util.control.Breaks._
 
 object Main extends App {
   def getListOfFiles(dir: String): List[File] = {
@@ -31,24 +32,41 @@ object Main extends App {
   }
 
   def process(path: String): Unit = {
+    java.util.logging.Logger
+      .getLogger("org.apache.pdfbox").setLevel(java.util.logging.Level.SEVERE)
+
     val start = System.nanoTime
 
     val files = getRecursiveListOfFiles(new File(path))
 
     for (f <- files) {
-      if (f.getName.toLowerCase().endsWith(".pdf")) {
-        f.getParentFile.getAbsolutePath.replaceAll("pdf", "json").toFile.createIfNotExists(true, true)
-        val pw = new PrintWriter(new File(f.getAbsolutePath.replaceAll("pdf", "json")))
+      breakable {
+        if (f.getName.toLowerCase().endsWith(".pdf")) {
+          f.getParentFile.getAbsolutePath.replaceAll("pdf", "json").toFile.createIfNotExists(true, true)
+          var pw: Option[PrintWriter] = None
 
-        val company = f.getParentFile.getName
-        val year = "\\d\\d\\d\\d".r.findFirstIn(f.getName).getOrElse("0")
+          val company = f.getParentFile.getName
+          val year = "\\d\\d\\d\\d".r.findFirstIn(f.getName).getOrElse("0")
 
-        val stripper = new PDFTabularTextStripper
+          val stripper = new PDFTabularTextStripper
 
-        val text = stripper.getText(f, company, year)
+          println(f.getAbsoluteFile)
 
-        pw.write(text)
-        pw.close()
+          var text: String = ""
+
+          try {
+            text = stripper.getText(f, company, year)
+            pw = Some(new PrintWriter(new File(f.getAbsolutePath.replaceAll("pdf", "json"))))
+            pw.get.write(text)
+          } catch {
+            case _ => break
+          } finally {
+             pw match {
+               case Some(p) => p.close()
+               case None => Nil
+            }
+          }
+        }
       }
     }
 
